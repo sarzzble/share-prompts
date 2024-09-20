@@ -1,0 +1,33 @@
+const User = models.User || model("User", UserSchema);
+
+- Bu kod, Mongoose kullanarak bir User modelini oluşturma veya mevcut olan bir modeli kullanma anlamına gelir. Mongoose, MongoDB ile etkileşim kurmak için kullanılan bir kütüphanedir ve bu kod, MongoDB'deki "User" koleksiyonunu temsil eden bir model oluşturur.
+
+- models.User
+Mongoose, önceden tanımlanmış modelleri models adında bir nesnede saklar. Eğer daha önce User adında bir model tanımlandıysa, models.User onu referans alır.
+
+- ||
+Bu operatör, bir "veya" işlemcisidir. Eğer models.User zaten varsa, onu kullanır. Eğer yoksa, yeni bir User modeli tanımlar.
+
+- model("User", UserSchema)
+Eğer models.User mevcut değilse, Mongoose'un model fonksiyonu çağrılır ve User adında yeni bir model tanımlanır. Bu model, UserSchema adında bir şemayı kullanır.
+
+- useNewUrlParser: true: Yeni bağlantı URL'si yapısını kullanmak için.
+useUnifiedTopology: true: Yeni ve gelişmiş bağlantı yönetimi özelliklerini etkinleştirmek için.
+
+const sessionUser = await User.findOne({
+  email: session.user.email,
+});
+session.user.id = sessionUser._id.toString();
+
+- Bu kod, bir kullanıcı oturumunu (session) yönetmek amacıyla veritabanındaki kullanıcı bilgilerini bulup, oturumdaki kullanıcının kimliğini (id) atamak için kullanılır.
+
+- await User.findOne({ email: session.user.email }):
+Bu satır, User modelini kullanarak email alanı ile eşleşen kullanıcıyı MongoDB'deki veritabanında arar. Burada session.user.email, mevcut oturumdaki kullanıcının e-posta adresini temsil eder.
+await ifadesi, veritabanı sorgusunun asenkron olduğu anlamına gelir. Yani, MongoDB'den bir sonuç alınana kadar kod akışı durdurulur.
+Eğer bu e-posta adresine sahip bir kullanıcı bulunursa, kullanıcının tüm verileri sessionUser değişkenine atanır. Eğer böyle bir kullanıcı bulunamazsa, null döner.
+
+- session.user.id = sessionUser._id.toString();:
+Bu satır, oturumdaki kullanıcının id alanını günceller.
+sessionUser._id ifadesi, MongoDB'de bulunan kullanıcının benzersiz kimliğini (_id) temsil eder.
+toString() metodu, MongoDB'deki _id alanının bir ObjectId tipi olduğu için, bunu bir dizeye (string) dönüştürmek amacıyla kullanılır. Bu, genellikle oturum veya başka işlemlerde kullanılabilir hale getirilir.
+ 
